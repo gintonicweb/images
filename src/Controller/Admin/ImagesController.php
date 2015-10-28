@@ -25,8 +25,7 @@ class ImagesController extends AppController
                         Configure::read('Glide.secureUrls') ? Security::salt() : null
                     );
                     $url = $urlBuilder->getUrl(
-                        $entity->model . '/' . $entity->filename,
-                        ['w' => 300, 'h' => 400, 'fit' => 'crop']
+                        $entity->model . '/' . $entity->filename
                     );
                     return '<a href="' . $url . '">' . $entity->filename. '</a>';
                 },

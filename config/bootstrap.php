@@ -8,11 +8,11 @@ Plugin::load('Josegonzalez/Upload');
 Plugin::load('ADmad/Glide');
 Configure::write('Glide', [
     'serverConfig' => [
-        'base_url' => '/images/',
+        'base_url' => '/_images/',
         'source' => ROOT . DS . 'uploads/',
         'cache' => WWW_ROOT . 'cache',
         'response' => new ADmad\Glide\Responses\CakeResponseFactory(),
     ],
     'secureUrls' => true,
 ]);
-DispatcherFactory::add('ADmad/Glide.Glide', ['for' => '/images']);
+DispatcherFactory::add('ADmad/Glide.Glide', ['for' => '/_images']);
