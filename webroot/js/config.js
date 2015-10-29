@@ -1,1 +1,1 @@
-requirejs.config({paths:{cropper:"images/vendor/cropper/dist/cropper",images:"images/js"},shim:{cropper:["jquery"]},packages:[]}),define("config",function(){});
+requirejs.config({paths:{cropper:"images/vendor/cropper/dist/cropper",picturefill:"images/vendor/picturefill/dist/picturefill",images:"images/js"},shim:{cropper:["jquery"]},packages:[]}),define("config",function(){});

@@ -17,8 +17,11 @@ class ImagesHelper extends Helper
         'templates' => [
             'link' => '<a href="{{url}}">{{name}}</a>',
             'image' => '<img src="{{url}}" alt="{{name}}">',
+            'picturefill' => '<img src="{{url}}" srcset="{{srcset}}" sizes="{{sizes}}" alt="{{name}}">',
         ]
     ];
+
+    public $helpers = ['Requirejs.Require'];
 
     /**
      * $options = [
@@ -29,7 +32,7 @@ class ImagesHelper extends Helper
      *     'alt' => 'alt text',
      * ]
      */
-    function link($entity, $options = []) 
+    public function link($entity, $options = []) 
     {
         return $this->templater()->format('link',[
             'url' => $this->getUrl($entity, $options),
@@ -37,7 +40,7 @@ class ImagesHelper extends Helper
         ]);
     }
 
-    function image($entity, $options = []) 
+    public function image($entity, $options = []) 
     {
         return $this->templater()->format('image',[
             'url' => $this->getUrl($entity, $options),
@@ -45,7 +48,44 @@ class ImagesHelper extends Helper
         ]);
     }
 
-    function cropper($entity, $options = []) 
+    /**
+     * $options = [
+     *     'sizes' => '(min-width: 40em) 80vw, 100vw'
+     *     'srcset' => [375, 480, 780]
+     *     'name' => 'My picture',
+     *     'alt' => 'alt text',
+     * ]
+     */
+    public function picturefill($entity, $options)
+    {
+        $srcset = '';
+        foreach ($options['srcset'] as $size) {
+            $src = $this->getUrl($entity, ['w' => $size]);
+            $src .= " " . $size . "w"; 
+            $srcset[] = $src;
+        }
+        $srcset = implode(" ,", $srcset);
+
+        $picturefill = $this->templater()->format('picturefill',[
+            'url' => $this->getUrl($entity, $options),
+            'srcset' => $srcset,
+            'sizes' => $options['sizes'],
+            'name' => Inflector::humanize($entity->entity),
+        ]);
+        $selfLoad = $this->Require->module('picturefill');
+        return $picturefill . $selfLoad;
+    }
+
+    /**
+     * $options = [
+     *     'w' => 300,
+     *     'h' => 400,
+     *     'fit' => 'crop',
+     *     'name' => 'My picture',
+     *     'alt' => 'alt text',
+     * ]
+     */
+    public function cropper($entity, $options = []) 
     {
         return $this->_View->Element('Images.cropbox', [
             'url' => $this->getUrl($entity, $options),
@@ -54,7 +94,7 @@ class ImagesHelper extends Helper
         ]);
     }
 
-    function getUrl($entity, $options)
+    public function getUrl($entity, $options)
     {
         $urlBuilder = UrlBuilderFactory::create(
             Configure::read('Glide.serverConfig.base_url'),
@@ -63,5 +103,4 @@ class ImagesHelper extends Helper
         $url = $entity->model . '/' . $entity->filename;
         return $urlBuilder->getUrl($url, $options);
     }
-
 }

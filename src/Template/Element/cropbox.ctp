@@ -22,3 +22,6 @@
 <?= $this->Form->input('url', ['type'=>'hidden']) ?>
 <?= $this->Form->submit('save', ['class'=>'btn-primary']) ?>
 </div>
+
+<?php $this->loadHelper('Requirejs.Require') ?>
+<?= $this->Require->module('images/cropper') ?>
