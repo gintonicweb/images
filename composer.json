@@ -7,7 +7,7 @@
         "cakephp/cakephp": "3.1.*",
         "josegonzalez/cakephp-upload": "3.*@dev",
         "admad/cakephp-glide": "1.0.x-dev",
-        "gintonicweb/requirejs": "0.0.*"
+        "gintonicweb/requirejs": "~0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
