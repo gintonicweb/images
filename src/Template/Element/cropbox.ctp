@@ -1,5 +1,5 @@
 <div data-cropper="data-cropper">
-    <img src="<?= $url ?>" alt="<?= $name ?>">
+    <img src="<?= $imageUrl ?>" alt="<?= $name ?>">
     </div>
 </div>
 <div class="text-center">
@@ -12,7 +12,7 @@
 </p>
 
 <?= $this->Form->create(null,[
-    'url' => ['controller' => 'images', 'action' => 'crop', $imageId]
+    'url' => $url
 ]) ?>
 <?= $this->Form->input('x', ['type'=>'hidden']) ?>
 <?= $this->Form->input('y', ['type'=>'hidden']) ?>

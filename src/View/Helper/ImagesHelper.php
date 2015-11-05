@@ -83,14 +83,19 @@ class ImagesHelper extends Helper
      *     'fit' => 'crop',
      *     'name' => 'My picture',
      *     'alt' => 'alt text',
+     *     'url' => ['controller' => 'users', 'action' => 'afterCrop']
      * ]
      */
     public function cropper($entity, $options = []) 
     {
+        if (!isset($options['url'])) {
+            $options['url'] = ['controller' => 'images', 'action' => 'crop', $imageId];
+        }
         return $this->_View->Element('Images.cropbox', [
-            'url' => $this->getUrl($entity, $options),
+            'imageUrl' => $this->getUrl($entity, $options),
             'name' => Inflector::humanize($entity->entity),
-            'imageId' => $entity->id,
+            'imageId' => $vntity->id,
+            'url' => $options['url'],
         ]);
     }
 
