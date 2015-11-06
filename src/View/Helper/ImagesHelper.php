@@ -17,7 +17,7 @@ class ImagesHelper extends Helper
         'templates' => [
             'link' => '<a href="{{url}}">{{name}}</a>',
             'image' => '<img src="{{url}}" alt="{{name}}">',
-            'picturefill' => '<img src="{{url}}" srcset="{{srcset}}" sizes="{{sizes}}" alt="{{name}}">',
+            'picturefill' => '<img src="{{url}}" srcset="{{srcset}}" sizes="{{sizes}}" alt="{{name}}" class="{{class}}">',
         ]
     ];
 
@@ -71,6 +71,7 @@ class ImagesHelper extends Helper
             'srcset' => $srcset,
             'sizes' => $options['sizes'],
             'name' => Inflector::humanize($entity->entity),
+            'class' => isset($options['class']) ? $options['class'] : '',
         ]);
         $selfLoad = $this->Require->module('picturefill');
         return $picturefill . $selfLoad;
