@@ -18,88 +18,71 @@ via composer
 composer require gintonicweb/images
 ```
 
-run the migration
+In config/bootstrap.php
 ```
-bin/cake migrations migrate -p Images
-```
-
-in config/bootstrap.php
-```
-Plugin::load('Images', ['routes' => true, 'bootstrap' => 'true']);
+Plugin::load('Images', ['bootstrap' => 'true']);
 ```
 
-## Upload and manage images
+## Quickstart
 
-Any model can now ```haveOne``` or ```haveMany``` images. 
-Start by adding the ImagesBehavior to the model of your choice.
+1. Add the ```filename``` field to the table of your choice.
 
-```
-$this->addBehavior('Images.Images');
-```
 
-In the controller, instead of calling save(), call ```createWithImages($requestData)```
+2. Add the ImagesBehavior to the Table object of your choice. 
 
 ```
-public function add() {
-    if ($this->request->is('post')) {
-        if ($this->Post->createWithImages($this->request->data)) {
-            $this->Session->setFlash(__('The post has been saved'));
-        } else {
-            $this->Session->setFlash(__('Error saving the post'));
-        }
+class Avatars extends Table
+{
+    public function initialize(array $config)
+    {
+        $this->addBehavior('Images.Image');
     }
 }
 ```
 
-Add the field ```filename``` in the template.
+3. Add the ImageTrait to the matching Entity
 
 ```
-echo $this->Form->create('Post', array('type' => 'file'));
-echo $this->Form->input('Image.0.attachment', array('type' => 'file', 'label' => 'Image'));
+use Images\Model\Entity\ImageTrait;
+
+class Avatar extends Entity
+{
+    use ImageTrait;
+}
+```
+
+## Saving Images
+
+Create a writable ```/upload``` folder in the ROOT folder of your app. That's 
+where images will be stored with the following folder structure ```APP/uploads/Avatars/1234567.jpg```.  
+Then, simply add the field ```filename``` to your forms.
+
+```
+echo $this->Form->create('Pictures', array('type' => 'file'));
+echo $this->Form->input('filename', array('type' => 'file', 'label' => 'Picture'));
 echo $this->Form->end(__('Add'));
 ```
 
-Create a writable ```/upload``` folder in the ROOT folder of your app. That's 
-where images will be stored with the following folder structure ```/uploads/Posts/1234567.jpg```.
-
-
 ## Display images
 
-To display the freshly uploaded images, use the Images Helper. This is a simple
-wrapper around Glide to render images with the option to set the size
-server-side.
+Use the entity's virtual property to create an image of the right dimensions and
+cache it server-side. The options match
+The method used to generate urls is the following
 
-
-In the template:
 ```
-<?php $this->loadHelper('Images.Images'); ?>
-<?= $this->Images->image($imageEntity, [
-    'name' => ' '
-    'w' => 500,
-    'h' => 500,
-    'fit' => 'crop'
-]) ?>
-
-// <img src="https://mysite.com/_images/MyModel/123456.jpg?w=500&h=500&s=..." alt="My image">
+$imageEntity->getUrl([
+    'w' => 300,
+    'h' => 400,
+    'fit' => 'crop',
+]);
 ```
 
-The method```link()``` is also available for a simple anchor link to the image.
-```
-<?php $this->loadHelper('Images.Images'); ?>
-<?= $this->Images->link($imageEntity, [
-    'name' => 'My image'
-    'w' => 500,
-    'h' => 500
-]) ?>
-
-// <a href="https://mysite.com/_images/MyModel/123456.jpg?w=500&h=500&s=...">My image</a>
-```
-
+It's possible to use that url in your calls to cake's default Html helper.
 
 ## Picturefill
 
-The most efficient way to display responsive images is via picturefill. Call it
-like this
+The most efficient way to display responsive images is via picturefill. This 
+feature is experimental and relies on scottjehl/picturefill and requirejs
 
 ```
 <?php $this->loadHelper('Images.Images'); ?>
@@ -121,30 +104,16 @@ information, see [picturefill](https://scottjehl.github.io/picturefill/)
 ## Crop Images
 
 Provide users with a crop and rotate tool. This feature is experimental and
-currently relies on fengyuanchen/cropper and requirejs
+currently relies on fengyuanchen/cropper and requirejs and twbs/bootstrap.
 
-Include cropper's stylesheet 
-```
-<link  href="webroot/vendor/cropper/dist/cropper.min.css" rel="stylesheet">
-```
-
-If you use gintonicweb/requirejs, simply add ['Images.config'] to the list of
-plugins. If you prefer regular requirejs, load it like this.
-```
-require(['/images/js/config.js'], function(){require(['images/cropper']);});
-```
-
-To use the cropping panel, pass an Image entity to your template, and load the
-cropping panel using the Images helper. The only mandatory configuration option
-is the url, which is where users need to be redirected once they save the
-cropped image.
+Render the following element to benefit from a simple rotate/crop panel
 
 ```
-<?php $this->loadHelper('Images.Images'); ?>
-<?= $this->Images->cropper($imageEntity, [
-    'name' => 'My image'
-    'w' => 500,
-    'h' => 500,
-    'url' => ['controller' => 'Profiles', 'action' => 'view']
+<?= $this->Element('Images.cropbox', [
+    'imageUrl' => $entity->getUrl([
+        'w' => 300,
+        'h' => 400,
+        'fit' => 'crop',
+    ]),
 ]) ?>
 ```
