@@ -6,7 +6,7 @@ use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Josegonzalez\Upload\Model\Behavior\UploadBehavior;
 
-class ImageBehavior extends UploadBehavior 
+class ImageBehavior extends UploadBehavior
 {
     protected $_defaultConfig = [
         'filename' => [
@@ -19,14 +19,39 @@ class ImageBehavior extends UploadBehavior
         ],
     ];
 
+    /**
+     * Every time the image is saved, the file is renamed. This eliminate the
+     * need to handle cache busting in the browser.
+     *
+     * @param \Cake\Event\Event $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
+     * @param \ArrayObject $options the options passed to the save method
+     * @return void
+     */
     public function beforeSave(Event $event, Entity $entity, ArrayObject $options)
     {
         $entity->set('uniqid', uniqid());
         parent::beforeSave($event, $entity, $options);
     }
 
-    // After recieving a crop thing
-    public function transform(Entity $image, $data = null)
+    /**
+     * Apply transformations (rotate/crop) to an image
+     *
+     * ```
+     * $data = [
+     *     'rotate' => 90,
+     *     'width' => 200,
+     *     'height' => 300,
+     *     'x' => 20,
+     *     'y' => 50,
+     * ];
+     * ```
+     *
+     * @param \Cake\Datasource\EntityTrait $image the entity being transformed
+     * @param array $data the transformation information
+     * @return void
+     */
+    public function transform(Entity $image, array $data = null)
     {
         $sourcePath = $image->sourcePath;
         $image->filename = uniqid() . '.' . $image->ext;
@@ -35,7 +60,7 @@ class ImageBehavior extends UploadBehavior
         if ($result) {
             $imagick = new \Imagick($sourcePath);
 
-            if(!is_null($data)) {
+            if (!is_null($data)) {
                 $imagick->rotateimage('#000', $data['rotate']);
                 $imagick->cropImage(
                     $data['width'],

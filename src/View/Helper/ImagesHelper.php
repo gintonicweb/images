@@ -2,6 +2,7 @@
 namespace Images\View\Helper;
 
 use Cake\Core\Configure;
+use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
 use Cake\View\StringTemplateTrait;
@@ -10,22 +11,28 @@ class ImagesHelper extends Helper
 {
     use StringTemplateTrait;
 
-    public $helpers = ['Requirejs.Require','Html'];
+    public $helpers = ['Requirejs.Require', 'Html'];
 
     /**
-     * todo: Use the Image helper instead of going free for all
+     * Generates an image tag that handle multiple sizes and rendered with picturefill
      *
+     * ```
      * $options = [
      *     'sizes' => '(min-width: 40em) 80vw, 100vw'
      *     'srcset' => [375, 480, 780]
      * ]
+     * ```
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
+     * @param array $options picturefill options
+     * @return string
      */
-    public function picturefill($entity, $options)
+    public function picturefill(Entity $entity, array $options)
     {
         $srcset = '';
         foreach ($options['srcset'] as $size) {
             $src = $this->getUrl($entity, ['w' => $size]);
-            $src .= " " . $size . "w"; 
+            $src .= " " . $size . "w";
             $srcset[] = $src;
         }
         $options['srcset'] = implode(" ,", $srcset);
