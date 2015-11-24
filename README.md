@@ -58,8 +58,8 @@ where images will be stored with the following folder structure ```APP/uploads/A
 Then, simply add the field ```filename``` to your forms.
 
 ```
-echo $this->Form->create('Pictures', array('type' => 'file'));
-echo $this->Form->input('filename', array('type' => 'file', 'label' => 'Picture'));
+echo $this->Form->create('Pictures', ['type' => 'file']);
+echo $this->Form->input('filename', ['type' => 'file', 'label' => 'Picture']);
 echo $this->Form->end(__('Add'));
 ```
 
@@ -88,8 +88,8 @@ feature is experimental and relies on scottjehl/picturefill and requirejs
 <?php $this->loadHelper('Images.Images'); ?>
 
 <?= $this->Images->picturefill($imageEntity, [
-    'sizes' => '(min-width: 40em) 80vw, 100vw'
-    'srcset' => [375, 480, 780]
+    'sizes' => '(min-width: 40em) 80vw, 100vw',
+    'srcset' => [375, 480, 780],
     'name' => 'My picture',
     'alt' => 'alt text',
 ]) ?>
@@ -116,4 +116,23 @@ Render the following element to benefit from a simple rotate/crop panel
         'fit' => 'crop',
     ]),
 ]) ?>
+```
+
+This form should post the following data back.
+```
+[
+    'rotate' => 90,
+    'width' => 200,
+    'height' => 300,
+    'x' => 20,
+    'y' => 50,
+];
+```
+
+You can apply it to your Image entity with a controller resemblig this
+
+```
+if ($this->request->is(['post'])) {
+    $imagesTable->transform($imageEntity, $this->request->data);
+}
 ```

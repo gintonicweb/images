@@ -31,13 +31,13 @@ class ImagesHelper extends Helper
     {
         $srcset = '';
         foreach ($options['srcset'] as $size) {
-            $src = $this->getUrl($entity, ['w' => $size]);
+            $src = $entity->getUrl(['w' => $size]);
             $src .= " " . $size . "w";
             $srcset[] = $src;
         }
         $options['srcset'] = implode(" ,", $srcset);
 
-        $this->Html->image($this->getUrl($entity, $options), $options);
+        $picturefill = $this->Html->image($entity->getUrl($options), $options);
         $selfLoad = $this->Require->module('picturefill');
 
         return $picturefill . $selfLoad;
