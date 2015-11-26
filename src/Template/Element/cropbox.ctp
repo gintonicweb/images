@@ -1,6 +1,6 @@
 <link  href="/images/vendor/cropper/dist/cropper.min.css" rel="stylesheet">
 
-<div data-cropper="data-cropper">
+<div data-cropper="data-cropper" style="max-height:<?= $height ?>">
     <img src="<?= $imageUrl ?>">
 </div>
 

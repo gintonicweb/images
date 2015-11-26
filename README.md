@@ -110,11 +110,8 @@ Render the following element to benefit from a simple rotate/crop panel
 
 ```
 <?= $this->Element('Images.cropbox', [
-    'imageUrl' => $entity->getUrl([
-        'w' => 300,
-        'h' => 400,
-        'fit' => 'crop',
-    ]),
+    'imageUrl' => $entity->getUrl(),
+    'height' => '400px',
 ]) ?>
 ```
 

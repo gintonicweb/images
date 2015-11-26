@@ -43,7 +43,7 @@ trait ImageTrait
      * @param array $options Glide compatible options
      * @return string
      */
-    public function getUrl($options)
+    public function getUrl($options = [])
     {
         $urlBuilder = UrlBuilderFactory::create(
             Configure::read('Glide.serverConfig.base_url'),
