@@ -35,6 +35,19 @@ class ImageBehavior extends UploadBehavior
     }
 
     /**
+     * Before getting rid of the image in the database, delete the image from the filesystem
+     *
+     * @param \Cake\Event\Event $event The beforeDelete event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be deleted
+     * @param \ArrayObject $options the options passed to the delete method
+     * @return void
+     */
+    public function beforeDelete(Event $event, Entity $entity, ArrayObject $options)
+    {
+        unlink($entity->sourcePath);
+    }
+
+    /**
      * Apply transformations (rotate/crop) to an image
      *
      * ```
