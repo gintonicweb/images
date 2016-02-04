@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gintonicweb/images.svg?branch=master)](https://travis-ci.org/gintonicweb/images)
+[![codecov.io](https://codecov.io/github/gintonicweb/images/coverage.svg?branch=master)](https://codecov.io/github/gintonicweb/images?branch=master)
 # Images plugin for CakePHP
 
 ## Warning
