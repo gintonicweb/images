@@ -1,4 +1,3 @@
-  $.extend(prototype, {
     bind: function () {
       var options = this.options;
       var $this = this.$element;
@@ -26,11 +25,11 @@
 
       $cropper.on(EVENT_MOUSE_DOWN, $.proxy(this.cropStart, this));
 
-      if (options.zoomable && options.mouseWheelZoom) {
+      if (options.zoomable && options.zoomOnWheel) {
         $cropper.on(EVENT_WHEEL, $.proxy(this.wheel, this));
       }
 
-      if (options.doubleClickToggle) {
+      if (options.toggleDragModeOnDblclick) {
         $cropper.on(EVENT_DBLCLICK, $.proxy(this.dblclick, this));
       }
 
@@ -70,11 +69,11 @@
 
       $cropper.off(EVENT_MOUSE_DOWN, this.cropStart);
 
-      if (options.zoomable && options.mouseWheelZoom) {
+      if (options.zoomable && options.zoomOnWheel) {
         $cropper.off(EVENT_WHEEL, this.wheel);
       }
 
-      if (options.doubleClickToggle) {
+      if (options.toggleDragModeOnDblclick) {
         $cropper.off(EVENT_DBLCLICK, this.dblclick);
       }
 
@@ -85,5 +84,4 @@
       if (options.responsive) {
         $window.off(EVENT_RESIZE, this._resize);
       }
-    }
-  });
+    },

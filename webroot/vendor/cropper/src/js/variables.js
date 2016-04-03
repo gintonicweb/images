@@ -2,6 +2,11 @@
   var $window = $(window);
   var $document = $(document);
   var location = window.location;
+  var navigator = window.navigator;
+  var ArrayBuffer = window.ArrayBuffer;
+  var Uint8Array = window.Uint8Array;
+  var DataView = window.DataView;
+  var btoa = window.btoa;
 
   // Constants
   var NAMESPACE = 'cropper';
@@ -34,7 +39,10 @@
   var EVENT_ZOOM = 'zoom.' + NAMESPACE;
 
   // RegExps
-  var REGEXP_ACTIONS = /^(e|w|s|n|se|sw|ne|nw|all|crop|move|zoom)$/;
+  var REGEXP_ACTIONS = /e|w|s|n|se|sw|ne|nw|all|crop|move|zoom/;
+  var REGEXP_DATA_URL = /^data\:/;
+  var REGEXP_DATA_URL_HEAD = /^data\:([^\;]+)\;base64,/;
+  var REGEXP_DATA_URL_JPEG = /^data\:image\/jpeg.*;base64,/;
 
   // Data keys
   var DATA_PREVIEW = 'preview';
@@ -57,17 +65,18 @@
 
   // Supports
   var SUPPORT_CANVAS = $.isFunction($('<canvas>')[0].getContext);
+  var IS_SAFARI = navigator && /safari/i.test(navigator.userAgent) && /apple computer/i.test(navigator.vendor);
 
   // Maths
-  var sqrt = Math.sqrt;
+  var num = Number;
   var min = Math.min;
   var max = Math.max;
   var abs = Math.abs;
   var sin = Math.sin;
   var cos = Math.cos;
-  var num = parseFloat;
+  var sqrt = Math.sqrt;
+  var round = Math.round;
+  var floor = Math.floor;
 
-  // Prototype
-  var prototype = {
-    version: '@VERSION'
-  };
+  // Utilities
+  var fromCharCode = String.fromCharCode;

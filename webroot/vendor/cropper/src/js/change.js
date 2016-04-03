@@ -1,5 +1,4 @@
-  $.extend(prototype, {
-    change: function (shiftKey, originalEvent) {
+    change: function (shiftKey, event) {
       var options = this.options;
       var aspectRatio = options.aspectRatio;
       var action = this.action;
@@ -25,11 +24,11 @@
         aspectRatio = width && height ? width / height : 1;
       }
 
-      if (options.strict) {
+      if (this.limited) {
         minLeft = cropBox.minLeft;
         minTop = cropBox.minTop;
-        maxWidth = minLeft + min(container.width, canvas.width);
-        maxHeight = minTop + min(container.height, canvas.height);
+        maxWidth = minLeft + min(container.width, canvas.left + canvas.width);
+        maxHeight = minTop + min(container.height, canvas.top + canvas.height);
       }
 
       range = {
@@ -342,7 +341,7 @@
             abs(this.startY - this.startY2),
             abs(this.endX - this.endX2),
             abs(this.endY - this.endY2)
-          ), originalEvent);
+          ), event);
           this.startX2 = this.endX2;
           this.startY2 = this.endY2;
           renderable = false;
@@ -350,35 +349,35 @@
 
         // Create crop box
         case ACTION_CROP:
-          if (range.x && range.y) {
-            offset = this.$cropper.offset();
-            left = this.startX - offset.left;
-            top = this.startY - offset.top;
-            width = cropBox.minWidth;
-            height = cropBox.minHeight;
+          if (!range.x || !range.y) {
+            renderable = false;
+            break;
+          }
 
-            if (range.x > 0) {
-              if (range.y > 0) {
-                action = ACTION_SOUTH_EAST;
-              } else {
-                action = ACTION_NORTH_EAST;
-                top -= height;
-              }
-            } else {
-              if (range.y > 0) {
-                action = ACTION_SOUTH_WEST;
-                left -= width;
-              } else {
-                action = ACTION_NORTH_WEST;
-                left -= width;
-                top -= height;
-              }
-            }
+          offset = this.$cropper.offset();
+          left = this.startX - offset.left;
+          top = this.startY - offset.top;
+          width = cropBox.minWidth;
+          height = cropBox.minHeight;
 
-            // Show the crop box if is hidden
-            if (!this.cropped) {
-              this.cropped = true;
-              this.$cropBox.removeClass(CLASS_HIDDEN);
+          if (range.x > 0) {
+            action = range.y > 0 ? ACTION_SOUTH_EAST : ACTION_NORTH_EAST;
+          } else if (range.x < 0) {
+            left -= width;
+            action = range.y > 0 ? ACTION_SOUTH_WEST : ACTION_NORTH_WEST;
+          }
+
+          if (range.y < 0) {
+            top -= height;
+          }
+
+          // Show the crop box if is hidden
+          if (!this.isCropped) {
+            this.$cropBox.removeClass(CLASS_HIDDEN);
+            this.isCropped = true;
+
+            if (this.limited) {
+              this.limitCropBox(true, true);
             }
           }
 
@@ -400,5 +399,4 @@
       // Override
       this.startX = this.endX;
       this.startY = this.endY;
-    }
-  });
+    },

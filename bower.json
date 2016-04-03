@@ -18,7 +18,7 @@
     "!webroot/**"
   ],
   "dependencies": {
-    "cropper": "~1.0.0",
+    "cropper": "*",
     "picturefill": "~3.0.1"
   }
 }

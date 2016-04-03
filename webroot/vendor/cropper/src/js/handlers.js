@@ -1,5 +1,5 @@
-  $.extend(prototype, {
     resize: function () {
+      var restore = this.options.restore;
       var $container = this.$container;
       var container = this.container;
       var canvasData;
@@ -7,7 +7,7 @@
       var ratio;
 
       // Check `container` is necessary for IE8
-      if (this.disabled || !container) {
+      if (this.isDisabled || !container) {
         return;
       }
 
@@ -15,21 +15,26 @@
 
       // Resize when width changed or height changed
       if (ratio !== 1 || $container.height() !== container.height) {
-        canvasData = this.getCanvasData();
-        cropBoxData = this.getCropBoxData();
+        if (restore) {
+          canvasData = this.getCanvasData();
+          cropBoxData = this.getCropBoxData();
+        }
 
         this.render();
-        this.setCanvasData($.each(canvasData, function (i, n) {
-          canvasData[i] = n * ratio;
-        }));
-        this.setCropBoxData($.each(cropBoxData, function (i, n) {
-          cropBoxData[i] = n * ratio;
-        }));
+
+        if (restore) {
+          this.setCanvasData($.each(canvasData, function (i, n) {
+            canvasData[i] = n * ratio;
+          }));
+          this.setCropBoxData($.each(cropBoxData, function (i, n) {
+            cropBoxData[i] = n * ratio;
+          }));
+        }
       }
     },
 
     dblclick: function () {
-      if (this.disabled) {
+      if (this.isDisabled) {
         return;
       }
 
@@ -41,16 +46,26 @@
     },
 
     wheel: function (event) {
-      var originalEvent = event.originalEvent;
-      var e = originalEvent;
+      var e = event.originalEvent || event;
       var ratio = num(this.options.wheelZoomRatio) || 0.1;
       var delta = 1;
 
-      if (this.disabled) {
+      if (this.isDisabled) {
         return;
       }
 
       event.preventDefault();
+
+      // Limit wheel speed to prevent zoom too fast
+      if (this.wheeling) {
+        return;
+      }
+
+      this.wheeling = true;
+
+      setTimeout($.proxy(function () {
+        this.wheeling = false;
+      }, this), 50);
 
       if (e.deltaY) {
         delta = e.deltaY > 0 ? 1 : -1;
@@ -60,7 +75,7 @@
         delta = e.detail > 0 ? 1 : -1;
       }
 
-      this.zoom(-delta * ratio, originalEvent);
+      this.zoom(-delta * ratio, event);
     },
 
     cropStart: function (event) {
@@ -71,7 +86,7 @@
       var touchesLength;
       var action;
 
-      if (this.disabled) {
+      if (this.isDisabled) {
         return;
       }
 
@@ -79,7 +94,7 @@
         touchesLength = touches.length;
 
         if (touchesLength > 1) {
-          if (options.zoomable && options.touchDragZoom && touchesLength === 2) {
+          if (options.zoomable && options.zoomOnTouch && touchesLength === 2) {
             e = touches[1];
             this.startX2 = e.pageX;
             this.startY2 = e.pageY;
@@ -127,7 +142,7 @@
       var action = this.action;
       var touchesLength;
 
-      if (this.disabled) {
+      if (this.isDisabled) {
         return;
       }
 
@@ -135,7 +150,7 @@
         touchesLength = touches.length;
 
         if (touchesLength > 1) {
-          if (options.zoomable && options.touchDragZoom && touchesLength === 2) {
+          if (options.zoomable && options.zoomOnTouch && touchesLength === 2) {
             e = touches[1];
             this.endX2 = e.pageX;
             this.endY2 = e.pageY;
@@ -160,7 +175,7 @@
         this.endX = e.pageX || originalEvent && originalEvent.pageX;
         this.endY = e.pageY || originalEvent && originalEvent.pageY;
 
-        this.change(e.shiftKey, action === ACTION_ZOOM ? originalEvent : null);
+        this.change(e.shiftKey, action === ACTION_ZOOM ? event : null);
       }
     },
 
@@ -168,7 +183,7 @@
       var originalEvent = event.originalEvent;
       var action = this.action;
 
-      if (this.disabled) {
+      if (this.isDisabled) {
         return;
       }
 
@@ -177,7 +192,7 @@
 
         if (this.cropping) {
           this.cropping = false;
-          this.$dragBox.toggleClass(CLASS_MODAL, this.cropped && this.options.modal);
+          this.$dragBox.toggleClass(CLASS_MODAL, this.isCropped && this.options.modal);
         }
 
         this.action = '';
@@ -187,5 +202,4 @@
           action: action
         });
       }
-    }
-  });
+    },

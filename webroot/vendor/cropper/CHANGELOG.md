@@ -1,13 +1,110 @@
 # Changelog
 
 
+## 2.3.0 (Feb 22, 2016)
+
+- Added a new parameter to the `replace` method for applying filters.
+- Improved the image initializing for Safari (#120, #509).
+- Fixed incorrect size limitation of the crop box.
+- Fixed incorrect cropped canvas when scaleX or scaleY great than 1 (#598).
+
+
+## 2.2.5 (Jan 18, 2016)
+
+- Fixed crossOriginUrl undefined error when exists the `crossOrigin` property.
+
+
+## 2.2.4 (Jan 1, 2016)
+
+- Fixed a dimension bug in the "getCroppedCanvas" method.
+- Added an example for cropping round image.
+
+
+## 2.2.3 (Dec 28, 2015)
+
+- Supports to zoom from event triggering point.
+
+
+## 2.2.2 (Dec 24, 2015)
+
+- Limit wheel speed to prevent zoom too fast
+- Improve the `setCropBoxData` method
+
+
+## 2.2.1 (Dec 12, 2015)
+
+- Handle Data URL (Fixed #540: avoid to use XMLHttpRequest to open a Data URL)
+- Handle ajax error when load ArrayBuffer
+- Not to transform the image to base64 when Orientation equals to `1`
+
+
+## 2.2.0 (Dec 6, 2015)
+
+- Added a new option: `checkOrientation` (#120, #509)
+- Added a timestamp to the url of preview image (#531)
+
+
+## 2.1.0 (Dec 2, 2015)
+
+- Added new `restore` option
+
+
+## 2.0.2 (Nov 30, 2015)
+
+- Fixed #476: Floor the numerical parameters for `CanvasRenderingContext2D.drawImage`
+
+
+## 2.0.1 (Nov 18, 2015)
+
+- Improved new crop box creating
+
+
+## 2.0.0 (Nov 11, 2015)
+
+### Common
+
+- Supports four modes
+- Supports three drag modes
+- Improved the experience of cropping
+- Makes the crop box's borders and handlers visible when overflow
+- Fixed an issue of canvas limitation
+- Fixed an issue of cropping
+
+
+### Options
+
+- Added `viewMode`
+- Added `dragMode`
+- Renamed `touchDragZoom` to `zoomOnTouch`
+- Renamed `mouseWheelZoom` to `zoomOnWheel`
+- Renamed `doubleClickToggle` to `toggleDragModeOnDblclick`
+- Renamed `checkImageOrigin` to `checkCrossOrigin`
+- Removed `strict` (supported by `viewMode: 1`)
+- Removed `dragCrop` (supported by `dragMode: 'crop'`)
+
+
+### Methods
+
+- Added `moveTo`
+- Added `zoomTo`
+- Added `rotateTo`
+- Added `scaleX`
+- Added `scaleY`
+- Improved `getCanvasData` (added `naturalWidth` and `naturalHeight`)
+
+
+### Events
+
+- Improved `zoom` (changed `event.ratio` and added `event.oldRatio`)
+
+
 ## 1.0.0 (Oct 10, 2015)
 
 - Improved canvas limitation
 - Improved preview
 - Improved test
 - Fixed an error in the `clear` method (missed parameters)
-- Fixed the issue of crop box limitaion (#430)
+- Fixed the issue of crop box limitation (#430)
 
 
 ## 1.0.0-rc.1 (Sep 5, 2015)
@@ -105,7 +202,7 @@
 - Supports multiple global croppers by default.
 - Outputs cropped canvas for display or get Data URL or get Blob
 - Identifies drag events with "event.dragType" property
-- Added zoom events for controling the canvas (image) size.
+- Added zoom events for controlling the canvas (image) size.
 - Improved responsiveness for window resizing.
 
 
@@ -143,7 +240,7 @@
 - Refactored source code.
 - Compiles CSS with [Less](http://lesscss.org) CSS preprocessors.
 - Supports fixed container.
-- Supports rotation with CSS3 Transform3d.
+- Supports rotation with CSS3 2D Transforms.
 
 
 ### Options:
@@ -316,7 +413,7 @@
 - Add eight new options: "autoCrop", "dragCrop", "moveable", "resizeable", "maxWidth", "maxHeight", "minWidth" and "minHeight".
 - Add three new methods: "reset", "release" and "destroy".
 - Add three new events: "build.cropper", "built.cropper" and "render.cropper".
-- Remove two old methods: "enbale" and "disable".
+- Remove two old methods: "enable" and "disable".
 - Remove three old events: "dragstart", "dragmove" and "dragend".
 - Supports no conflict with the "$.fn.cropper.noConflict" method.
 

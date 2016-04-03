@@ -1,4 +1,3 @@
-  $.extend(prototype, {
     build: function () {
       var options = this.options;
       var $this = this.$element;
@@ -7,12 +6,12 @@
       var $cropBox;
       var $face;
 
-      if (!this.ready) {
+      if (!this.isLoaded) {
         return;
       }
 
       // Unbuild first when replace
-      if (this.built) {
+      if (this.isBuilt) {
         this.unbuild();
       }
 
@@ -36,11 +35,11 @@
       this.initPreview();
       this.bind();
 
-      // Format aspect ratio (0 -> NaN)
-      options.aspectRatio = num(options.aspectRatio) || NaN;
+      options.aspectRatio = max(0, options.aspectRatio) || NaN;
+      options.viewMode = max(0, min(3, round(options.viewMode))) || 0;
 
       if (options.autoCrop) {
-        this.cropped = true;
+        this.isCropped = true;
 
         if (options.modal) {
           this.$dragBox.addClass(CLASS_MODAL);
@@ -73,26 +72,26 @@
         $cropBox.find('.cropper-line, .cropper-point').addClass(CLASS_HIDDEN);
       }
 
-      this.setDragMode(options.dragCrop ? ACTION_CROP : (options.movable ? ACTION_MOVE : ACTION_NONE));
-
+      this.setDragMode(options.dragMode);
       this.render();
-      this.built = true;
+      this.isBuilt = true;
       this.setData(options.data);
       $this.one(EVENT_BUILT, options.built);
 
       // Trigger the built event asynchronously to keep `data('cropper')` is defined
       setTimeout($.proxy(function () {
         this.trigger(EVENT_BUILT);
-        this.complete = true;
+        this.isCompleted = true;
       }, this), 0);
     },
 
     unbuild: function () {
-      if (!this.built) {
+      if (!this.isBuilt) {
         return;
       }
 
-      this.built = false;
+      this.isBuilt = false;
+      this.isCompleted = false;
       this.initialImage = null;
 
       // Clear `initialCanvas` is necessary when replace
@@ -116,5 +115,4 @@
 
       this.$cropper.remove();
       this.$cropper = null;
-    }
-  });
+    },
