@@ -1,6 +1,13 @@
 <link  href="/images/vendor/cropper/dist/cropper.min.css" rel="stylesheet">
 
-<div data-cropper="data-cropper" style="max-height:<?= $height ?>">
+<div 
+    style="max-height:<?= $height ?>"
+    data-aspect-ratio="<?= isset($aspectRatio) ? $aspectRatio : "1" ?>"
+    data-view-mode="<?= isset($viewMode) ? $viewMode: "0" ?>"
+    data-background="<?= isset($background) ? $background: "false" ?>"
+    data-guides="<?= isset($guides) ? $guides: "false" ?>"
+    data-minCropBoxHeight="<?= isset($minCropBoxHeight) ? $minCropBoxHeight: "200" ?>"
+    data-cropper="data-cropper">
     <img src="<?= $imageUrl ?>">
 </div>
 
